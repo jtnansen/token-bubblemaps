@@ -2,16 +2,10 @@
 const NANSEN_HOLDERS_API_URL = '/api/nansen/api/v1/tgm/holders';
 
 export async function fetchTokenHolders(tokenAddress, chain = 'solana', perPage = 100) {
-  const apiKey = import.meta.env.VITE_NANSEN_API_KEY;
-
   console.log('🪙 Fetching token holders:');
   console.log('   Token:', tokenAddress);
   console.log('   Chain:', chain);
   console.log('   Per page:', perPage);
-
-  if (!apiKey) {
-    throw new Error('Nansen API key not found. Please add it to your .env file.');
-  }
 
   if (!tokenAddress) {
     throw new Error('No token address provided');
@@ -45,7 +39,6 @@ export async function fetchTokenHolders(tokenAddress, chain = 'solana', perPage 
     const response = await fetch(NANSEN_HOLDERS_API_URL, {
       method: 'POST',
       headers: {
-        "apiKey": apiKey,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(requestBody)
@@ -105,11 +98,6 @@ export async function fetchTokenHolders(tokenAddress, chain = 'solana', perPage 
 
 // Fetch counterparties for a holder to find interactions with other holders
 export async function fetchHolderCounterparties(holderAddress, chain = 'solana', timeframe = '1Y') {
-  const apiKey = import.meta.env.VITE_NANSEN_API_KEY;
-
-  if (!apiKey) {
-    throw new Error('Nansen API key not found.');
-  }
 
   // Calculate date range
   const today = new Date();
@@ -164,7 +152,6 @@ export async function fetchHolderCounterparties(holderAddress, chain = 'solana',
     const response = await fetch('/api/nansen/api/beta/profiler/address/counterparties', {
       method: 'POST',
       headers: {
-        "apiKey": apiKey,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(requestBody)
