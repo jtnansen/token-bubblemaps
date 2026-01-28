@@ -73,7 +73,7 @@ export const useVisualizationData = () => {
       setData([transformedData]); // Replace, don't append
 
       // Start fetching interactions in the background
-      console.log('🔗 Fetching holder interactions with 15 concurrent requests/sec...');
+      console.log('🔗 Fetching holder interactions (last 1 year) with 15 concurrent requests/sec...');
       setLoadingProgress({ current: 0, total: holdersData.data.length });
 
       let processedCount = 0;
@@ -97,7 +97,7 @@ export const useVisualizationData = () => {
         }
       };
 
-      await findHolderInteractions(holdersData.data, chainToUse, 'ALL', onProgress);
+      await findHolderInteractions(holdersData.data, chainToUse, '1Y', onProgress);
 
       console.log('✅ All holder interactions loaded');
       setLoadingProgress({ current: 0, total: 0 });

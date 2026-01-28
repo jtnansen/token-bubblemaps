@@ -99,19 +99,19 @@ export async function fetchTokenHolders(tokenAddress, chain = 'solana', perPage 
 // Fetch counterparties for a holder to find interactions with other holders
 export async function fetchHolderCounterparties(holderAddress, chain = 'solana', timeframe = '1Y') {
 
-  // Calculate date range
+  // Calculate date range (Nansen API limit: max 1 year)
   const today = new Date();
   const daysBack = {
     '30D': 30,
     '90D': 90,
     '180D': 180,
-    '1Y': 365,
-    '2Y': 730,
-    'ALL': 1825 // 5 years should capture most data
+    '1Y': 365
   };
 
   const startDate = new Date();
-  startDate.setDate(today.getDate() - (daysBack[timeframe] || 365));
+  // Cap at 365 days to respect API limit
+  const maxDays = Math.min(daysBack[timeframe] || 365, 365);
+  startDate.setDate(today.getDate() - maxDays);
 
   const formatDate = (date) => {
     const year = date.getFullYear();
@@ -248,7 +248,7 @@ async function processBatchWithRateLimit(items, processFn, concurrency = 15) {
 }
 
 // Find interactions between holders with batched concurrent requests
-export async function findHolderInteractions(holders, chain, timeframe = 'ALL', onProgress = null) {
+export async function findHolderInteractions(holders, chain, timeframe = '1Y', onProgress = null) {
   console.log(`🔍 Finding interactions between ${holders.length} holders over ${timeframe}`);
 
   const holderAddresses = new Set(holders.map(h => h.address.toLowerCase()));
